@@ -2,13 +2,15 @@ const prisma = require("../../prisma");
 
 exports.findAll = (req, res) => {
   const title = req.query.title;
-  const page  = req.query.page;
-  const size = req.query.size;
+  const page  = parseInt(req.query.page);
+  const size = parseInt(req.query.size);
   const condition = title
     ? { where: { title: { contains: title, mode: "insensitive" } },
         take: size,
-        skip: size * page }
-    : {};
+        skip: size * (page-1) }
+    : {
+        take: size,
+        skip: size * (page-1) };
 
   prisma.song
     .findMany(condition)
